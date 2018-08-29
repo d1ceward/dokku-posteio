@@ -1,6 +1,17 @@
 server {
   listen      [::]:80;
   listen      80;
+
+  server_name {{ $.DOMAIN_NAME }};
+  access_log  /var/log/nginx/dokku-posteio-access.log;
+  error_log   /var/log/nginx/dokku-posteio.log;
+
+  return 301 https://$host:443$request_uri;
+}
+
+server {
+  listen      [::]:443;
+  listen      443;
   
   server_name {{ $.DOMAIN_NAME }}; 
   access_log  /var/log/nginx/dokku-posteio-access.log;
@@ -44,10 +55,6 @@ server {
     root /var/lib/dokku/data/nginx-vhosts/dokku-errors;
     internal;
   }
-}
-
-upstream posteio-80 {
-  server {{ $.CONTAINER_IP }}:80;
 }
 
 upstream posteio-443 {
