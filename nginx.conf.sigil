@@ -1,0 +1,7 @@
+upstream posteio-80 {
+  server {{ $.CONTAINER_IP }}:80;
+}
+
+upstream posteio-443 {
+  server {{ $.CONTAINER_IP }}:443;
+}

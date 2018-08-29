@@ -9,16 +9,24 @@ fi
 source "$PLUGIN_BASE_PATH/common/functions"
 
 run_func() {
-  local CID
+  local CONTAINER_ID CONTAINER_IP
 
-  CID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
-    -p 25:25 -p 80:80 -p 110:110 -p 143:143 -p 443:443 -p 587:587 -p 993:993 -p 995:995 \
+  CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
+    -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 \
     -e DISABLE_CLAMAV=$POSTEIO_DISABLE_CLAMAV \
     -v /etc/localtime:/etc/localtime:ro \
     -v $POSTEIO_ROOT/data:/data \
     $POSTEIO_IMAGE:$POSTEIO_IMAGE_VERSION)
+  
+  CONTAINER_IP=$(docker indocker inspect --format '{{ .NetworkSettings.IPAddress }}' "$CONTAINER_ID")
 
-  echo "$CID" > "$POSTEIO_ROOT/CONTAINER"
+  echo "$CONTAINER_ID" > "$POSTEIO_ROOT/CONTAINER"
+  echo "$CONTAINER_IP" > "$POSTEIO_ROOT/IP"
+
+  local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
+  local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="$CONTAINER_IP")
+
+  sigil "${SIGIL_PARAMS[@]}" | cat -s > /etc/nginx/conf.d/posteio.conf
 }
 
 start_cmd() {
