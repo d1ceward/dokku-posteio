@@ -31,12 +31,18 @@ plugin-install() {
     docker pull "${IMAGE}"
   fi
 
+  dokku_log_info1 "Creating data directory"
   mkdir -p "${POSTEIO_ROOT}" || echo "Failed to create posteio root directory"
   chown dokku:dokku "${POSTEIO_ROOT}"
 
+  dokku_log_info1 "Creating nginx conf directory"
   mkdir -p /etc/nginx/conf.d/ || echo "Failed to create nginx conf directory"
+
+  dokku_log_info1 "Creating nginx conf files"
   touch "${POSTEIO_ROOT}/nginx.conf"
   echo "include ${POSTEIO_ROOT}/nginx.conf;" > /etc/nginx/conf.d/dokku_posteio.conf
+
+  dokku_log_info1 "Restarting nginx"
   restart_nginx
 }
 
