@@ -18,7 +18,7 @@ run_func() {
     -v $POSTEIO_ROOT/data:/data \
     $POSTEIO_IMAGE:$POSTEIO_IMAGE_VERSION)
   
-  CONTAINER_IP=$(docker indocker inspect --format '{{ .NetworkSettings.IPAddress }}' "$CONTAINER_ID")
+  CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$CONTAINER_ID")
 
   echo "$CONTAINER_ID" > "$POSTEIO_ROOT/CONTAINER"
   echo "$CONTAINER_IP" > "$POSTEIO_ROOT/IP"
