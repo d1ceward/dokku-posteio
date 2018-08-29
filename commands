@@ -9,7 +9,7 @@ fi
 source "${PLUGIN_BASE_PATH}/common/functions"
 
 run_func() {
-  if [[ ! -f "$POSTEIO_ROOT/DOMAIN" ]]; then
+  if [[ -f "${POSTEIO_ROOT}/DOMAIN" ]]; then
     local CONTAINER_ID CONTAINER_IP
 
     dokku_log_info1 "Starting container"
@@ -25,7 +25,7 @@ run_func() {
 
     dokku_log_info1 "Creating nginx config file"
     local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
-    local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/CONTAINER")"
+    local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN_NAME")"
     local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
       DOMAIN_NAME="${DOMAIN_NAME}")
     sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
@@ -53,6 +53,8 @@ start_cmd() {
     if (! is_container_status "$(< "${POSTEIO_ROOT}/CONTAINER")" "Running"); then
       docker rm -f dokku.posteio &>/dev/null || true
       run_func
+    else
+       dokku_log_warn "posteio container is already started"
     fi
   fi
 }
