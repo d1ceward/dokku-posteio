@@ -14,23 +14,48 @@ is_container_status() {
   return 1
 }
 
+run_func() {
+  local CID
+
+  CID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
+    -p 25:25 -p 80:80 -p 110:110 -p 143:143 -p 443:443 -p 587:587 -p 993:993 -p 995:995 \
+    -e DISABLE_CLAMAV=$POSTEIO_DISABLE_CLAMAV \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v $POSTEIO_ROOT/data:/data \
+    $POSTEIO_IMAGE:$POSTEIO_IMAGE_VERSION)
+
+  echo "$CID" > "$POSTEIO_ROOT/CONTAINER"
+}
+
 start_cmd() {
   if [[ ! -f "$POSTEIO_ROOT/CONTAINER" ]]; then
     if (docker inspect dokku.posteio &> /dev/null); then
       docker rm -f dokku.posteio &>/dev/null || true
     fi
-    # Start command (docker run)
+    run_func
   else
-    if (! is_container_status "$POSTEIO_ROOT/CONTAINER" "Running"); then
+    if (! is_container_status "$(< "$POSTEIO_ROOT/CONTAINER")" "Running"); then
       docker rm -f dokku.posteio &>/dev/null || true
-      # Start command (docker run)
+      run_func
     fi
+  fi
+}
+
+stop_cmd() {
+  local desc="stops posteio container"
+  if [[ -f "$POSTEIO_ROOT/CONTAINER" ]]; then
+    docker stop "$(< "$POSTEIO_ROOT/CONTAINER")" || true
+  else
+    dokku_log_warn "posteio not deployed"
   fi
 }
 
 case "$1" in
   posteio:start)
     start_cmd "$@"
+    ;;
+  posteio:stop)
+    stop_cmd "$@"
     ;;
   *)
     exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
