@@ -4,41 +4,53 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 PLUGIN_BASE_PATH="$PLUGIN_PATH"
 if [[ -n $DOKKU_API_VERSION ]]; then
-  PLUGIN_BASE_PATH="$PLUGIN_ENABLED_PATH"
+  PLUGIN_BASE_PATH="${PLUGIN_ENABLED_PATH}"
 fi
-source "$PLUGIN_BASE_PATH/common/functions"
+source "${PLUGIN_BASE_PATH}/common/functions"
 
 run_func() {
-  local CONTAINER_ID CONTAINER_IP
+  if [[ ! -f "$POSTEIO_ROOT/DOMAIN" ]]; then
+    local CONTAINER_ID CONTAINER_IP
 
-  dokku_log_info1 "Starting container"
-  CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
-    -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 \
-    -e DISABLE_CLAMAV=$POSTEIO_DISABLE_CLAMAV \
-    -v /etc/localtime:/etc/localtime:ro \
-    -v $POSTEIO_ROOT/data:/data \
-    $POSTEIO_IMAGE:$POSTEIO_IMAGE_VERSION)
-  
-  CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$CONTAINER_ID")
+    dokku_log_info1 "Starting container"
+    CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
+      -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 \
+      -e DISABLE_CLAMAV=${POSTEIO_DISABLE_CLAMAV} \
+      -v /etc/localtime:/etc/localtime:ro \
+      -v ${POSTEIO_ROOT}/data:/data \
+      ${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION})
+    CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
+    echo "${CONTAINER_ID}" > "${POSTEIO_ROOT}/CONTAINER"
+    echo "${CONTAINER_IP}" > "${POSTEIO_ROOT}/IP"
 
-  echo "$CONTAINER_ID" > "$POSTEIO_ROOT/CONTAINER"
-  echo "$CONTAINER_IP" > "$POSTEIO_ROOT/IP"
+    dokku_log_info1 "Creating nginx config file"
+    local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
+    local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/CONTAINER")"
+    local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
+      DOMAIN_NAME="${DOMAIN_NAME}")
+    sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
+  else
+    dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
+  fi
+}
 
-  dokku_log_info1 "Creating nginx config file"
-  local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
-  local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="$CONTAINER_IP")
-  rm -f "$POSTEIO_ROOT/nginx.conf"
-  sigil "${SIGIL_PARAMS[@]}" | cat -s > "$POSTEIO_ROOT/nginx.conf"
+set_domain_cmd() {
+  declare desc="set the domain name for posteio"
+  declare DOMAIN_NAME="$2"
+
+  [[ -z "${DOMAIN_NAME}" ]] && dokku_log_fail "Please specify a domain name"
+  echo "${DOMAIN_NAME}" > "${POSTEIO_ROOT}/DOMAIN"
 }
 
 start_cmd() {
-  if [[ ! -f "$POSTEIO_ROOT/CONTAINER" ]]; then
+  declare desc="start posteio container"
+  if [[ ! -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
     if (docker inspect dokku.posteio &> /dev/null); then
       docker rm -f dokku.posteio &>/dev/null || true
     fi
     run_func
   else
-    if (! is_container_status "$(< "$POSTEIO_ROOT/CONTAINER")" "Running"); then
+    if (! is_container_status "$(< "${POSTEIO_ROOT}/CONTAINER")" "Running"); then
       docker rm -f dokku.posteio &>/dev/null || true
       run_func
     fi
@@ -47,19 +59,26 @@ start_cmd() {
 
 stop_cmd() {
   local desc="stops posteio container"
-  if [[ -f "$POSTEIO_ROOT/CONTAINER" ]]; then
-    docker stop "$(< "$POSTEIO_ROOT/CONTAINER")" || true
+  if [[ -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
+    dokku_log_info1 "Stopping container"
+    docker stop "$(< "${POSTEIO_ROOT}/CONTAINER")" || true
+
+    dokku_log_info1 "Removing nginx config file"
+    echo "" > "${POSTEIO_ROOT}/nginx.conf"
   else
     dokku_log_warn "posteio not deployed"
   fi
 }
 
 case "$1" in
+  posteio:set-domain)
+    set_domain_cmd "$@"
+    ;;
   posteio:start)
-    start_cmd "$@"
+    start_cmd
     ;;
   posteio:stop)
-    stop_cmd "$@"
+    stop_cmd
     ;;
   *)
     exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
