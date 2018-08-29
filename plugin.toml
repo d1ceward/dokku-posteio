@@ -1,4 +1,4 @@
 [plugin]
-description = "complete email service for dokku"
+description = "poste.io complete email service for dokku"
 version = "1.0.0"
 [plugin.config]

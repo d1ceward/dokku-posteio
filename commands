@@ -1,3 +1,38 @@
 #!/usr/bin/env bash
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
+is_container_status() {
+  declare desc="Returns 0 or 1 depending upon whether a given container has a certain status"
+  declare CID="$1" STATUS="$2"
+  local TEMPLATE="{{.State.$STATUS}}"
+  local CONTAINER_STATUS=$(docker inspect -f "$TEMPLATE" "$CID" 2> /dev/null || true)
+
+  if [[ "$CONTAINER_STATUS" == "true" ]]; then
+    return 0
+  fi
+  return 1
+}
+
+start_cmd() {
+  if [[ ! -f "$POSTEIO_ROOT/CONTAINER" ]]; then
+    if (docker inspect dokku.posteio &> /dev/null); then
+      docker rm -f dokku.posteio &>/dev/null || true
+    fi
+    # Start command (docker run)
+  else
+    if (! is_container_status "$POSTEIO_ROOT/CONTAINER" "Running"); then
+      docker rm -f dokku.posteio &>/dev/null || true
+      # Start command (docker run)
+    fi
+  fi
+}
+
+case "$1" in
+  posteio:start)
+    start_cmd "$@"
+    ;;
+  *)
+    exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
+    ;;
+esac
