@@ -23,17 +23,10 @@ run_func() {
   echo "$CONTAINER_ID" > "$POSTEIO_ROOT/CONTAINER"
   echo "$CONTAINER_IP" > "$POSTEIO_ROOT/IP"
 
-  local NGINX_BUILD_CONFIG_TMP_WORK_DIR=$(mktemp -d /tmp/dokku_posteio_nginx_template.XXXXX)
-  local NGINX_CONF=$(mktemp --tmpdir="${NGINX_BUILD_CONFIG_TMP_WORK_DIR}" "nginx.conf.XXXXXX")
-  trap 'rm -rf $NGINX_CONF $NGINX_BUILD_CONFIG_TMP_WORK_DIR > /dev/null' RETURN INT TERM EXIT
-
+  dokku_log_info1 "Creating nginx config file"
   local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
   local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="$CONTAINER_IP")
-
-  sigil "${SIGIL_PARAMS[@]}" | cat -s > "$NGINX_CONF"
-
-  dokku_log_info1 "Creating nginx config file posteio.conf"
-  mv "$NGINX_CONF" "/etc/nginx/conf.d/posteio.conf"
+  sigil "${SIGIL_PARAMS[@]}" | cat -s > "$POSTEIO_ROOT/nginx.conf"
 }
 
 start_cmd() {
