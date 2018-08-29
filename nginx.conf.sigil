@@ -58,5 +58,5 @@ server {
 }
 
 upstream dokku-posteio {
-  server {{ $.CONTAINER_IP }}:443;
+  server {{ $.CONTAINER_IP }}:80;
 }
