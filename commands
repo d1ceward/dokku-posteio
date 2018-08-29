@@ -2,17 +2,11 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-is_container_status() {
-  declare desc="Returns 0 or 1 depending upon whether a given container has a certain status"
-  declare CID="$1" STATUS="$2"
-  local TEMPLATE="{{.State.$STATUS}}"
-  local CONTAINER_STATUS=$(docker inspect -f "$TEMPLATE" "$CID" 2> /dev/null || true)
-
-  if [[ "$CONTAINER_STATUS" == "true" ]]; then
-    return 0
-  fi
-  return 1
-}
+PLUGIN_BASE_PATH="$PLUGIN_PATH"
+if [[ -n $DOKKU_API_VERSION ]]; then
+  PLUGIN_BASE_PATH="$PLUGIN_ENABLED_PATH"
+fi
+source "$PLUGIN_BASE_PATH/common/functions"
 
 run_func() {
   local CID
