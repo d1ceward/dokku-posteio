@@ -25,7 +25,7 @@ run_func() {
 
     dokku_log_info1 "Creating nginx config file"
     local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
-    local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN_NAME")"
+    local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
     local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
       DOMAIN_NAME="${DOMAIN_NAME}")
     sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
