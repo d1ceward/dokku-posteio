@@ -11,6 +11,7 @@ source "$PLUGIN_BASE_PATH/common/functions"
 run_func() {
   local CONTAINER_ID CONTAINER_IP
 
+  dokku_log_info1 "Starting container"
   CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
     -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 \
     -e DISABLE_CLAMAV=$POSTEIO_DISABLE_CLAMAV \
@@ -26,6 +27,7 @@ run_func() {
   dokku_log_info1 "Creating nginx config file"
   local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
   local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="$CONTAINER_IP")
+  rm -f "$POSTEIO_ROOT/nginx.conf"
   sigil "${SIGIL_PARAMS[@]}" | cat -s > "$POSTEIO_ROOT/nginx.conf"
 }
 

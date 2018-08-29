@@ -2,6 +2,24 @@
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
+restart_nginx() {
+  declare desc="restart nginx for given distros"
+  case "$(. /etc/os-release > /dev/null 2>&1 || true ; echo "$ID")" in
+    debian)
+      /usr/sbin/invoke-rc.d nginx reload > /dev/null
+      ;;
+    ubuntu)
+      /etc/init.d/nginx reload > /dev/null
+      ;;
+    opensuse)
+      /sbin/service nginx reload > /dev/null
+      ;;
+    arch|centos|rhel)
+      /usr/bin/systemctl reload nginx
+      ;;
+  esac
+}
+
 plugin-install() {
   declare IMAGE="${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}"
   if [[ "$PLUGIN_DISABLE_PULL" == "true" ]]; then
@@ -13,8 +31,13 @@ plugin-install() {
     docker pull "${IMAGE}"
   fi
 
-  mkdir -p "$POSTEIO_ROOT" || echo "Failed to create Poste.io data directory"
-  chown dokku:dokku "$POSTEIO_ROOT"
+  mkdir -p "${POSTEIO_ROOT}" || echo "Failed to create posteio root directory"
+  chown dokku:dokku "${POSTEIO_ROOT}"
+
+  mkdir -p /etc/nginx/conf.d/ || echo "Failed to create nginx conf directory"
+  touch "${POSTEIO_ROOT}/nginx.conf"
+  echo "include ${POSTEIO_ROOT}/nginx.conf;" > /etc/nginx/conf.d/dokku_posteio.conf
+  restart_nginx
 }
 
 plugin-install "$@"
