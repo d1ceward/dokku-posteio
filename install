@@ -13,8 +13,8 @@ plugin-install() {
     docker pull "${IMAGE}"
   fi
 
-  mkdir -p "$POSTEIO_DATA_ROOT" || echo "Failed to create Poste.io data directory"
-  chown dokku:dokku "$POSTEIO_DATA_ROOT"
+  mkdir -p "$POSTEIO_ROOT" || echo "Failed to create Poste.io data directory"
+  chown dokku:dokku "$POSTEIO_ROOT"
 }
 
 plugin-install "$@"
