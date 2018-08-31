@@ -40,6 +40,7 @@ plugin-install() {
 
   echo "-----> Creating nginx conf files"
   touch "${POSTEIO_ROOT}/nginx.conf"
+  chown dokku:dokku "${POSTEIO_ROOT}/nginx.conf"
   echo "include ${POSTEIO_ROOT}/nginx.conf;" > /etc/nginx/conf.d/dokku_posteio.conf
 
   echo "-----> Restarting nginx"
