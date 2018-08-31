@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
-source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+source "${PLUGIN_CORE_AVAILABLE_PATH}/common/functions"
 
 posteio_set_domain() {
   declare desc="set the domain name for posteio"
+  declare args="<domain>"
 
   [[ -z "$2" ]] && dokku_log_fail "Please specify a domain name"
-  echo "$2" > "$POSTEIO_ROOT/DOMAIN"
+  echo "$2" > "${POSTEIO_ROOT}/DOMAIN"
 }
 
-posteio_set_domain "$@"
+posteio_set_domain "${@}"

@@ -3,7 +3,6 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
 
 restart_nginx() {
-  declare desc="restart nginx for given distros"
   # shellcheck disable=SC1091
   case "$(. /etc/os-release > /dev/null 2>&1 || true ; echo "$ID")" in
     debian)
@@ -23,7 +22,7 @@ restart_nginx() {
 
 plugin-install() {
   declare IMAGE="${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}"
-  if [[ "$PLUGIN_DISABLE_PULL" == "true" ]]; then
+  if [[ "${PLUGIN_DISABLE_PULL}" == "true" ]]; then
     echo " !     ${PLUGIN_DISABLE_PULL_VARIABLE} environment variable detected. Not running pull command." 1>&2
     echo " !        docker pull ${IMAGE}" 1>&2
     return

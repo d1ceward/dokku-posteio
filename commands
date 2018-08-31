@@ -1,34 +1,47 @@
 #!/usr/bin/env bash
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
-source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+source "${PLUGIN_CORE_AVAILABLE_PATH}/common/functions"
 
-posteio_help_content_func() {
-  declare desc="return posteio plugin help content"
+export SUBCOMMAND_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/subcommands"
 
-  cat<<help_content
-  posteio:set_domain, set the domain name for posteio
-  posteio:start, start posteio container
-  posteio:stop, stop posteio container
-help_content
+posteio_help_contents_func() {
+  pushd "${SUBCOMMAND_ROOT}" > /dev/null 2>&1
+  for cmd in *; do
+    # get args from declare args="..."
+    args="$(grep args "${SUBCOMMAND_ROOT}/${cmd}" | head -1 || true)"
+    eval "${args}"
+
+    cmd_line="$(echo -e "${cmd} ${args}" | sed -e 's/[[:space:]]*$//')"
+
+    # get desc from declare desc="..."
+    desc="$(grep desc "${SUBCOMMAND_ROOT}/${cmd}" | head -1)"
+    eval "${desc}"
+
+    echo -e "    posteio:${cmd_line}, \033[2;37m${desc}\033[m"
+  done
 }
 
-posteio_print_help_func() {
-  declare desc="print help"
-
-  if [[ $1 = "posteio:help" ]] ; then
-    echo -e 'Usage: dokku posteio[:COMMAND]'
-    posteio_help_content_func | sort | column -c2 -t -s,
+posteio_help_print_func() {
+  if [[ "${1}" = "posteio:help" ]] || [[ "${1}" == "posteio" ]] || [[ "${1}" == "posteio:default" ]]
+  then
+    echo -e "$(tput bold)usage\033[m: dokku posteio[:COMMAND]"
+    echo ''
+    echo -e "dokku $(tput bold)posteio\033[m commands:"
+    echo ''
+    posteio_help_contents_func | sort | column -c2 -t -s,
   else
-    posteio_help_content_func
+    cat<<help_desc
+    posteio, Plugin for managing poste.io
+help_desc
   fi
 }
 
 case "$1" in
   help | posteio:help)
-    posteio_print_help_func "$@"
+    posteio_help_print_func "${@}"
     ;;
   *)
-    exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
+    exit "${DOKKU_NOT_IMPLEMENTED_EXIT}"
     ;;
 esac
