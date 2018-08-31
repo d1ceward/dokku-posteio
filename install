@@ -4,6 +4,7 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
 
 restart_nginx() {
   declare desc="restart nginx for given distros"
+  # shellcheck disable=SC1091
   case "$(. /etc/os-release > /dev/null 2>&1 || true ; echo "$ID")" in
     debian)
       /usr/sbin/invoke-rc.d nginx reload > /dev/null

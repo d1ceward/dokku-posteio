@@ -5,10 +5,9 @@ source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 
 posteio_set_domain() {
   declare desc="set the domain name for posteio"
-  local DOMAIN_NAME="$2"
 
-  [[ -z "${DOMAIN_NAME}" ]] && dokku_log_fail "Please specify a domain name"
-  echo "${DOMAIN_NAME}" > "${POSTEIO_ROOT}/DOMAIN"
+  [[ -z "$2" ]] && dokku_log_fail "Please specify a domain name"
+  echo "$2" > "$POSTEIO_ROOT/DOMAIN"
 }
 
 posteio_set_domain "$@"

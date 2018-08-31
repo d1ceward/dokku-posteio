@@ -5,12 +5,12 @@ source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 
 posteio_stop() {
   declare desc="stops posteio container"
-  if [[ -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
+  if [[ -f "$POSTEIO_ROOT/CONTAINER" ]]; then
     dokku_log_info1 "Stopping container"
-    docker stop "$(< "${POSTEIO_ROOT}/CONTAINER")" || true
+    docker stop "$(< "$POSTEIO_ROOT/CONTAINER")" || true
 
     dokku_log_info1 "Removing nginx config file"
-    echo "" > "${POSTEIO_ROOT}/nginx.conf"
+    echo "" > "$POSTEIO_ROOT/nginx.conf"
   else
     dokku_log_warn "posteio not deployed"
   fi
