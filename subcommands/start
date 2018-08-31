@@ -4,25 +4,24 @@ source "$PLUGIN_BASE_PATH/common/functions"
 source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 
 posteio_start_func() {
-  if [[ -f "${POSTEIO_ROOT}/DOMAIN" ]]; then
+  if [[ -f "$POSTEIO_ROOT/DOMAIN" ]]; then
     local CONTAINER_ID CONTAINER_IP
-    local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
+    local DOMAIN_NAME="$(< "$POSTEIO_ROOT/DOMAIN")"
     local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
 
     dokku_log_info1 "Starting container"
     CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
       -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 \
-      -e DISABLE_CLAMAV=${POSTEIO_DISABLE_CLAMAV} -e HTTPS=OFF \
-      -v /etc/localtime:/etc/localtime:ro -v ${POSTEIO_ROOT}/data:/data \
-      -h "${DOMAIN_NAME}" ${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION})
-    CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
-    echo "${CONTAINER_ID}" > "${POSTEIO_ROOT}/CONTAINER"
-    echo "${CONTAINER_IP}" > "${POSTEIO_ROOT}/IP"
+      -e DISABLE_CLAMAV=$POSTEIO_DISABLE_CLAMAV -e HTTPS=OFF \
+      -v /etc/localtime:/etc/localtime:ro -v $POSTEIO_ROOT/data:/data \
+      -h "$DOMAIN_NAME" $POSTEIO_IMAGE:$POSTEIO_IMAGE_VERSION)
+    CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$CONTAINER_ID")
+    echo "$CONTAINER_ID" > "$POSTEIO_ROOT/CONTAINER"
 
     dokku_log_info1 "Creating nginx config file"
-    local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
-      DOMAIN_NAME="${DOMAIN_NAME}")
-    sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
+    local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="$CONTAINER_IP" \
+      DOMAIN_NAME="$DOMAIN_NAME")
+    sigil "${SIGIL_PARAMS[@]}" | cat -s > "$POSTEIO_ROOT/nginx.conf"
   else
     dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
   fi
@@ -30,13 +29,13 @@ posteio_start_func() {
 
 posteio_start() {
   declare desc="start posteio container"
-  if [[ ! -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
+  if [[ ! -f "$POSTEIO_ROOT/CONTAINER" ]]; then
     if (docker inspect dokku.posteio &> /dev/null); then
       docker rm -f dokku.posteio &>/dev/null || true
     fi
     posteio_start_func
   else
-    if (! is_container_status "$(< "${POSTEIO_ROOT}/CONTAINER")" "Running"); then
+    if (! is_container_status "$(< "$POSTEIO_ROOT/CONTAINER")" "Running"); then
       docker rm -f dokku.posteio &>/dev/null || true
       posteio_start_func
     else

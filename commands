@@ -4,10 +4,12 @@ source "$PLUGIN_BASE_PATH/common/functions"
 source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 
 posteio_help_content_func() {
-  declare desc="return help_content string"
+  declare desc="return posteio plugin help content"
 
   cat<<help_content
-  posteio:set_domain, set the domain name for posteio"
+  posteio:set_domain, set the domain name for posteio
+  posteio:start, start posteio container
+  posteio:stop, stop posteio container
 help_content
 }
 
@@ -27,6 +29,6 @@ case "$1" in
     posteio_print_help_func "$@"
     ;;
   *)
-    exit $DOKKU_NOT_IMPLEMENTED_EXIT
+    exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
     ;;
 esac

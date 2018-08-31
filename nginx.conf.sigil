@@ -10,8 +10,8 @@ server {
 }
 
 server {
-  listen      [::]:443;
-  listen      443;
+  listen      [::]:80;
+  listen      80;
   
   server_name {{ $.DOMAIN_NAME }}; 
   access_log  /var/log/nginx/dokku-posteio-access.log;
