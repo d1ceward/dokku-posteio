@@ -1,31 +1,52 @@
-# Contributor Code of Conduct
+# Code of Merit
 
-## Our Pledge
+1. The project creators, lead developers, core team, constitute
+the managing members of the project and have final say in every decision
+of the project, technical or otherwise, including overruling previous decisions.
+There are no limitations to this decisional power.
 
-In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone.
+2. Contributions are an expected result of your membership on the project.
+Don't expect others to do your work or help you with your work forever. 
 
-## Our Standards
+3. All members have the same opportunities to seek any challenge they want
+within the project. 
 
-Examples of unacceptable behavior by participants include:
+4. Authority or position in the project will be proportional
+to the accrued contribution. Seniority must be earned.
 
-* The use of sexualized language or imagery and unwelcome sexual attention or advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a professional setting
+5. Software is evolutive: the better implementations must supersede lesser
+implementations. Technical advantage is the primary evaluation metric.
 
-## Our Responsibilities
+6. This is a space for technical prowess; topics outside of the project
+will not be tolerated.
 
-Project maintainers are responsible for clarifying the standards of acceptable behavior and are expected to take appropriate and fair corrective action in response to any instances of unacceptable behavior.
+7. Non technical conflicts will be discussed in a separate space. Disruption
+of the project will not be allowed.
 
-Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or to ban temporarily or permanently any contributor for other behaviors that they deem inappropriate, threatening, offensive, or harmful.
+8. Individual characteristics, including but not limited to,
+body, sex, sexual preference, race, language, religion, nationality,
+or political preferences are irrelevant in the scope of the project and
+will not be taken into account concerning your value or that of your contribution
+to the project.
 
-## Scope
+9. Discuss or debate the idea, not the person.
 
-This Code of Conduct applies both within project spaces and in public spaces when an individual is representing the project or its community. Examples of representing a project or community include using an official project e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event. Representation of a project may be further defined and clarified by project maintainers.
+10. There is no room for ambiguity: Ambiguity will be met with questioning;
+further ambiguity will be met with silence. It is the responsibility
+of the originator to provide requested context.
 
-## Enforcement
+11. If something is illegal outside the scope of the project, it is illegal
+in the scope of the project. This Code of Merit does not take precedence over
+governing law.
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at contact@d1ceward.com. The project team will review and investigate all complaints, and will respond in a way that it deems appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
+12. This Code of Merit governs the technical procedures of the project not the 
+activities outside of it. 
 
-Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined by other members of the project's leadership.
+13. Participation on the project equates to agreement of this Code of Merit.
+
+14. No objectives beyond the stated objectives of this project are relevant
+to the project. Any intent to deviate the project from its original purpose
+of existence will constitute grounds for remedial action which may include
+expulsion from the project.
+
+This document is the Code of Merit (http://code-of-merit.org), version 1.0.
