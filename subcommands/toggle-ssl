@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+posteio_enable_ssl() {
+  declare desc="enable ssl for posteio"
+
+  if [[ ! -f "${POSTEIO_ROOT}/custom_ssl.conf" ]]
+    echo "ssl_certificate ${POSTEIO_ROOT}/data/ssl/server.crt;
+ssl_certificate_key ${POSTEIO_ROOT}/data/ssl/server.key;
+ssl_protocols TLSv1.2;
+ssl_prefer_server_ciphers on;" > "${POSTEIO_ROOT}/custom_ssl.conf"
+  else
+    rm -f "${POSTEIO_ROOT}/custom_ssl.conf"
+  fi
+}
+
+posteio_enable_ssl
