@@ -20,6 +20,11 @@ you've ever seen - _Docker powered mini-Heroku_.
 **Note:** We are going to use the domain `mail.example.com` for demonstration
 purposes. Make sure to replace it to your domain name.
 
+## Download plugin
+```bash
+dokku plugin:install https://github.com/D1ceWard/dokku-posteio.git
+```
+
 ## Domain name
 Log onto your Dokku Host to setup domain name for posteio:
 
