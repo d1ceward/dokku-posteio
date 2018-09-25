@@ -25,6 +25,7 @@ posteio_start_func() {
       DOMAIN_NAME="${DOMAIN_NAME}" POSTEIO_ROOT="${POSTEIO_ROOT}")
     sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
     
+    mkdir -p "${POSTEIO_ROOT}/data/ssl/"
     if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.crt" ]]; then
       touch "${POSTEIO_ROOT}/data/ssl/server.crt"
     fi
