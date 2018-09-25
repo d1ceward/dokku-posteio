@@ -22,7 +22,7 @@ posteio_start_func() {
 
     dokku_log_info1 "Creating nginx config file"
     local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
-      DOMAIN_NAME="${DOMAIN_NAME}")
+      DOMAIN_NAME="${DOMAIN_NAME}" POSTEIO_ROOT="${POSTEIO_ROOT}")
     sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
   else
     dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
