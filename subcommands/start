@@ -9,6 +9,15 @@ posteio_start_func() {
     local CONTAINER_ID CONTAINER_IP
     local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
     local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
+    
+    dokku_log_info1 "Creating default SSL files" 
+    mkdir -p "${POSTEIO_ROOT}/data/ssl/"
+    if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.crt" ]]; then
+      echo "" > "${POSTEIO_ROOT}/data/ssl/server.crt"
+    fi
+    if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.key" ]]; then
+      echo "" > "${POSTEIO_ROOT}/data/ssl/server.key"
+    fi
 
     dokku_log_info1 "Starting container"
     CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
@@ -24,14 +33,6 @@ posteio_start_func() {
     local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
       DOMAIN_NAME="${DOMAIN_NAME}" POSTEIO_ROOT="${POSTEIO_ROOT}")
     sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
-    
-    mkdir -p "${POSTEIO_ROOT}/data/ssl/"
-    if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.crt" ]]; then
-      echo "" > "${POSTEIO_ROOT}/data/ssl/server.crt"
-    fi
-    if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.key" ]]; then
-      echo "" > "${POSTEIO_ROOT}/data/ssl/server.key"
-    fi
   else
     dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
   fi
