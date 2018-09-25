@@ -27,10 +27,10 @@ posteio_start_func() {
     
     mkdir -p "${POSTEIO_ROOT}/data/ssl/"
     if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.crt" ]]; then
-      touch "${POSTEIO_ROOT}/data/ssl/server.crt"
+      echo "" > "${POSTEIO_ROOT}/data/ssl/server.crt"
     fi
     if [[ ! -f "${POSTEIO_ROOT}/data/ssl/server.key" ]]; then
-      touch "${POSTEIO_ROOT}/data/ssl/server.key"
+      echo "" > "${POSTEIO_ROOT}/data/ssl/server.key"
     fi
   else
     dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
