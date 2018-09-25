@@ -31,10 +31,7 @@ server {
   access_log /var/log/nginx/dokku-posteio-access.log;
   error_log /var/log/nginx/dokku-posteio-error.log;
 
-  ssl_certificate {{ $.POSTEIO_ROOT }}/data/ssl/server.crt;
-  ssl_certificate_key {{ $.POSTEIO_ROOT }}/data/ssl/server.key;
-  ssl_protocols TLSv1.2;
-  ssl_prefer_server_ciphers on;
+  include {{ $.POSTEIO_ROOT }}/custom_ssl.conf*
 
   keepalive_timeout 70;
 
