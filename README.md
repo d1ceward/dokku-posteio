@@ -21,12 +21,13 @@ you've ever seen - _Docker powered mini-Heroku_.
 purposes. Make sure to replace it to your domain name.
 
 ## Download plugin
+Log onto your Dokku Host to download and install plugin:
 ```bash
 dokku plugin:install https://github.com/D1ceWard/dokku-posteio.git
 ```
 
 ## Domain name
-Log onto your Dokku Host to setup domain name for posteio:
+Next setup domain name for posteio:
 
 ```bash
 dokku posteio:set-domain mail.example.com
