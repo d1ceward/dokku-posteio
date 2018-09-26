@@ -51,7 +51,10 @@ Or directly by accessing this url:
 http://mail.example.com/admin/settings/#certificate
 ```
 
-Now click on create certificate and follow the instructions
+Now click on issue new certificate or choose existing one, after this tell plugin you enabled SSL by:
+```bash
+dokku posteio:toggle-ssl
+```
 
 ## Wrapping up
 
