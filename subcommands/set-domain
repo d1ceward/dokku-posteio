@@ -7,6 +7,7 @@ posteio_set_domain() {
   declare desc="set the domain name for posteio"
   declare args="<domain>"
 
+  dokku_log_info1 "Setup custom domain"
   [[ -z "$2" ]] && dokku_log_fail "Please specify a domain name"
   echo "$2" > "${POSTEIO_ROOT}/DOMAIN"
 }

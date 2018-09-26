@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
 source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "${PLUGIN_CORE_AVAILABLE_PATH}/common/functions"
+source "${PLUGIN_CORE_AVAILABLE_PATH}/nginx-vhosts/functions"
 
 posteio_enable_ssl() {
   declare desc="toggle ssl for posteio"
 
   if [[ ! -f "${POSTEIO_ROOT}/custom_ssl.conf" ]]; then
+    dokku_log_info1 "Enabling SSL"
     echo "ssl_certificate ${POSTEIO_ROOT}/data/ssl/server.crt;
 ssl_certificate_key ${POSTEIO_ROOT}/data/ssl/server.key;
 ssl_protocols TLSv1.2;
 ssl_prefer_server_ciphers on;" > "${POSTEIO_ROOT}/custom_ssl.conf"
   else
+    dokku_log_info1 "Disabling SSL"
     rm -f "${POSTEIO_ROOT}/custom_ssl.conf"
   fi
+
+  restart_nginx
 }
 
 posteio_enable_ssl
