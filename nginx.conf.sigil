@@ -43,7 +43,7 @@ server {
     gzip_vary on;
     gzip_comp_level 6;
 
-    proxy_pass  https://dokku-posteio;
+    proxy_pass  http://dokku-posteio;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
