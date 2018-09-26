@@ -11,7 +11,7 @@ server {
   }
 
   location /.well-known {
-    proxy_pass  http://dokku-posteio-80;
+    proxy_pass  http://dokku-posteio;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -43,7 +43,7 @@ server {
     gzip_vary on;
     gzip_comp_level 6;
 
-    proxy_pass  https://dokku-posteio-443;
+    proxy_pass  https://dokku-posteio;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -73,10 +73,6 @@ server {
   }
 }
 
-upstream dokku-posteio-80 {
+upstream dokku-posteio {
   server {{ $.CONTAINER_IP }}:80;
-}
-
-upstream dokku-posteio-443 {
-  server {{ $.CONTAINER_IP }}:443;
 }
