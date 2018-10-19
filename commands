@@ -23,7 +23,7 @@ posteio_help_contents_func() {
 }
 
 posteio_help_print_func() {
-  if [[ "${1}" = "posteio:help" ]] || [[ "${1}" == "posteio" ]] || [[ "${1}" == "posteio:default" ]]
+  if [[ "${1}" == "posteio" ]] || [[ "${1}" = "posteio:help" ]] || [[ "${1}" == "posteio:default" ]]
   then
     echo -e "$(tput bold)usage\033[m: dokku posteio[:COMMAND]"
     echo ''
@@ -38,7 +38,7 @@ help_desc
 }
 
 case "$1" in
-  help | posteio:help)
+  help | posteio | posteio:help | posteio:default )
     posteio_help_print_func "${@}"
     ;;
   *)
