@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 export POSTEIO_IMAGE=${POSTEIO_IMAGE:="analogic/poste.io"}
-export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.0.23"}
+export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.1.1"}
 export POSTEIO_DISABLE_CLAMAV=${POSTEIO_DISABLE_CLAMAV:="FALSE"}
 
 export POSTEIO_ROOT="/var/lib/dokku/services/posteio"
