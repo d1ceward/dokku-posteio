@@ -13,15 +13,15 @@ posteio_start_func() {
     dokku_log_info1 "Starting container"
     CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
       -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 -e HTTPS=OFF \
-      -v /etc/localtime:/etc/localtime:ro -v ${POSTEIO_ROOT}/data:/data \
-      -h "${DOMAIN_NAME}" ${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION})
+      -v /etc/localtime:/etc/localtime:ro -v "${POSTEIO_ROOT}/data:/data" \
+      -h "${DOMAIN_NAME}" "${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}")
 
     CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
     echo "${CONTAINER_ID}" > "${POSTEIO_ROOT}/CONTAINER"
 
     dokku_log_info1 "Creating nginx config file"
-    local SIGIL_PARAMS=(-f $NGINX_TEMPLATE CONTAINER_IP="${CONTAINER_IP}" \
-      DOMAIN_NAME="${DOMAIN_NAME}" POSTEIO_ROOT="${POSTEIO_ROOT}")
+    local SIGIL_PARAMS=(-f "$NGINX_TEMPLATE" "CONTAINER_IP=${CONTAINER_IP}" \
+      "DOMAIN_NAME=${DOMAIN_NAME}" "POSTEIO_ROOT=${POSTEIO_ROOT}")
     sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
   else
     dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
