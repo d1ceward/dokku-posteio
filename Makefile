@@ -4,4 +4,4 @@ lint:
 	# SC2034: Variable appears unused. Verify it or export it.
 	# SC2155: Declare and assign separately to avoid masking return values.
 	@echo linting...
-	@$(QUIET) find ./ -maxdepth 1 -not -path '*/\.*' | xargs file | egrep "shell|bash" | awk '{ print $$1 }' | sed 's/://g' | xargs shellcheck -e SC1090,SC2034,SC2155
+	@$(QUIET) find ./ -maxdepth 2 -not -path '*/\.*' | xargs file | egrep "shell|bash" | awk '{ print $$1 }' | sed 's/://g' | xargs shellcheck -e SC1090,SC2034,SC2155
