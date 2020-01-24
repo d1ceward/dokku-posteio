@@ -20,4 +20,4 @@ posteio_stop() {
   restart_nginx
 }
 
-posteio_stop "${@}"
+posteio_stop
