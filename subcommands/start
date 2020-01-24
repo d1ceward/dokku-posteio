@@ -10,9 +10,13 @@ posteio_start_func() {
     local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
     local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
 
+    if [[ "${1}" -eq "--disable-clamav" ]]; then
+      local CLAMAV="-e DISABLE_CLAMAV=TRUE"
+    fi
+
     dokku_log_info1 "Starting container"
     CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
-      -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 -e HTTPS=OFF \
+      -p 25:25 -p 110:110 -p 143:143 -p 587:587 -p 993:993 -p 995:995 -e HTTPS=OFF "${CLAMAV}" \
       -v /etc/localtime:/etc/localtime:ro -v "${POSTEIO_ROOT}/data:/data" \
       -h "${DOMAIN_NAME}" "${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}")
 
@@ -32,16 +36,17 @@ posteio_start_func() {
 
 posteio_start() {
   declare desc="start posteio container"
+  declare args="--disable-clamav"
 
   if [[ ! -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
     if (docker inspect dokku.posteio &> /dev/null); then
       docker rm -f dokku.posteio &>/dev/null || true
     fi
-    posteio_start_func
+    posteio_start_func "${2}"
   else
     if (! is_container_status "$(< "${POSTEIO_ROOT}/CONTAINER")" "Running"); then
       docker rm -f dokku.posteio &>/dev/null || true
-      posteio_start_func
+      posteio_start_func "${2}"
     else
        dokku_log_warn "posteio container is already started"
     fi
