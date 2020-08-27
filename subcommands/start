@@ -10,8 +10,8 @@ posteio_start_func() {
     local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
     local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
 
-    for i in "$@"; do
-      case $i in
+    for i in "${@}"; do
+      case ${i} in
         --disable-clamav) local CLAMAV=("-e DISABLE_CLAMAV=TRUE") ;;
         --disable-rspamd) local RSPAMD=("-e DISABLE_RSPAMD=TRUE") ;;
         --disable-roundcube) local ROUNDCUBE=("-e DISABLE_ROUNDCUBE=TRUE") ;;
@@ -41,17 +41,17 @@ posteio_start_func() {
 
 posteio_start() {
   declare desc="start posteio container"
-  declare args="--disable-clamav"
+  declare args="[--disable-clamav, --disable-rspamd, --disable-roundcube]"
 
   if [[ ! -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
     if (docker inspect dokku.posteio &> /dev/null); then
       docker rm -f dokku.posteio &>/dev/null || true
     fi
-    posteio_start_func "${2}"
+    posteio_start_func "${@}"
   else
     if (! is_container_status "$(< "${POSTEIO_ROOT}/CONTAINER")" "Running"); then
       docker rm -f dokku.posteio &>/dev/null || true
-      posteio_start_func "${2}"
+      posteio_start_func "${@}"
     else
        dokku_log_warn "posteio container is already started"
     fi
