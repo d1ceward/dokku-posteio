@@ -41,7 +41,11 @@ To start using Poste.io you need to start his docker container:
 dokku posteio:start
 ```
 
-**Note:** You can disable clamAV by passing `--disable-clamav` to the start command, it's useful to reduce memory usage if you don't need an antivirus protection.
+**Note:** 
+You can disable features by passing these optional parameters to the start command:
+- `--disable-clamav` to disable clamAV, it's useful to reduce memory usage if you don't need an antivirus protection.
+- `--disable-rspamd` to disable Rspamd, it's useful to reduce memory usage if you don't want a spam filtering system.
+- `--disable-roundcube` to disable the Roundcube webmail interface.
 
 ## SSL Certificate
 
