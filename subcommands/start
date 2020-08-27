@@ -7,7 +7,6 @@ source "${PLUGIN_CORE_AVAILABLE_PATH}/nginx-vhosts/functions"
 posteio_start_func() {
   if [[ -f "${POSTEIO_ROOT}/DOMAIN" ]]; then
     local CONTAINER_ID CONTAINER_IP
-    local TIMEZONE="$(< /etc/timezone)"
     local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
     local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
 
@@ -22,8 +21,8 @@ posteio_start_func() {
     dokku_log_info1 "Starting container"
     CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
       -p 25:25 -p 110:110 -p 143:143 -p 465:465 -p 587:587 -p 993:993 -p 995:995 \
-      -e HTTPS=OFF -e "TZ=${TIMEZONE}" "${CLAMAV}" "${RSPAMD}" "${ROUNDCUBE}"
-      -v "${POSTEIO_ROOT}/data:/data" \
+      -e HTTPS=OFF "${CLAMAV}" "${RSPAMD}" "${ROUNDCUBE}"
+      -v /etc/localtime:/etc/localtime:ro -v "${POSTEIO_ROOT}/data:/data" \
       -h "${DOMAIN_NAME}" "${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}")
 
     CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
