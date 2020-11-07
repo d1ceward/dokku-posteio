@@ -1,8 +1,8 @@
 [![GitHub release](https://img.shields.io/github/release/D1ceWard/dokku-posteio.svg)](https://github.com/D1ceWard/dokku-posteio)
-[![Poste.io](https://img.shields.io/badge/Poste.io-2.2.22-blue.svg)](https://poste.io/changelog)
+[![Poste.io](https://img.shields.io/badge/Poste.io-2.2.23-blue.svg)](https://poste.io/changelog)
 [![Dokku](https://img.shields.io/badge/Dokku-Repo-blue.svg)](https://github.com/dokku/dokku)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/D1ceWard/dokku-posteio/graphs/commit-activity)
-# Poste.io plugin for Dokku (v1.3.1 BETA)
+# Poste.io plugin for Dokku (v1.3.2 BETA)
 
 ### What is Poste.io?
 
@@ -41,7 +41,7 @@ To start using Poste.io you need to start his docker container:
 dokku posteio:start
 ```
 
-**Note:** 
+**Note:**
 You can disable features by passing these optional parameters to the start command:
 - `--disable-clamav` to disable clamAV, it's useful to reduce memory usage if you don't need an antivirus protection.
 - `--disable-rspamd` to disable Rspamd, it's useful to reduce memory usage if you don't want a spam filtering system.
