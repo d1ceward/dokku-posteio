@@ -1,8 +1,8 @@
 [![GitHub release](https://img.shields.io/github/release/D1ceWard/dokku-posteio.svg)](https://github.com/D1ceWard/dokku-posteio)
-[![Poste.io](https://img.shields.io/badge/Poste.io-2.2.26-blue.svg)](https://poste.io/changelog)
+[![Poste.io](https://img.shields.io/badge/Poste.io-2.2.29-blue.svg)](https://poste.io/changelog)
 [![Dokku](https://img.shields.io/badge/Dokku-Repo-blue.svg)](https://github.com/dokku/dokku)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/D1ceWard/dokku-posteio/graphs/commit-activity)
-# Poste.io plugin for Dokku (v1.3.3 BETA)
+# Poste.io plugin for Dokku (v1.3.4 BETA)
 
 ### What is Poste.io?
 
