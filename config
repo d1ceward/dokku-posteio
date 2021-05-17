@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 export POSTEIO_IMAGE=${POSTEIO_IMAGE:="analogic/poste.io"}
-export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.2.31"}
+export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.2.32"}
 
 export POSTEIO_ROOT="/var/lib/dokku/services/posteio"
