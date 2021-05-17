@@ -41,7 +41,7 @@ posteio_start_func() {
 
 posteio_start() {
   declare desc="start posteio container"
-  declare args="[--disable-clamav, --disable-rspamd, --disable-roundcube]"
+  declare args="[--disable-clamav|--disable-rspamd|--disable-roundcube]"
 
   if [[ ! -f "${POSTEIO_ROOT}/CONTAINER" ]]; then
     if (docker inspect dokku.posteio &> /dev/null); then
