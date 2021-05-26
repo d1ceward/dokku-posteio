@@ -2,4 +2,11 @@
 export POSTEIO_IMAGE=${POSTEIO_IMAGE:="analogic/poste.io"}
 export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.2.32"}
 
-export POSTEIO_ROOT="${DOKKU_LIB_ROOT}/data/posteio"
+OLD_POSTEIO_ROOT="${DOKKU_LIB_ROOT}/services/posteio"
+NEW_POSTEIO_ROOT="${DOKKU_LIB_ROOT}/data/posteio"
+
+if [[ -d $OLD_POSTEIO_ROOT && ! -d $NEW_POSTEIO_ROOT ]]; then
+  export POSTEIO_ROOT=${OLD_POSTEIO_ROOT}
+else
+  export POSTEIO_ROOT=${NEW_POSTEIO_ROOT}
+fi
