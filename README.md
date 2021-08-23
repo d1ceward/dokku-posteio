@@ -2,7 +2,7 @@
 [![Poste.io](https://img.shields.io/badge/Poste.io-2.3.1-blue.svg)](https://poste.io/changelog)
 [![Dokku](https://img.shields.io/badge/Dokku-Repo-blue.svg)](https://github.com/dokku/dokku)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/D1ceWard/dokku-posteio/graphs/commit-activity)
-# Poste.io plugin for Dokku (v1.5.0)
+# Poste.io plugin for Dokku (v1.5.1)
 
 ### What is Poste.io?
 
