@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 export POSTEIO_IMAGE=${POSTEIO_IMAGE:="analogic/poste.io"}
-export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.3.1"}
+export POSTEIO_IMAGE_VERSION=${POSTEIO_IMAGE_VERSION:="2.3.4"}
 
 OLD_POSTEIO_ROOT="${DOKKU_LIB_ROOT}/services/posteio"
 NEW_POSTEIO_ROOT="${DOKKU_LIB_ROOT}/data/posteio"
