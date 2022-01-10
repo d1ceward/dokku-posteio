@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "${PLUGIN_CORE_AVAILABLE_PATH}/common/functions"
+source "${PLUGIN_CORE_AVAILABLE_PATH}/nginx-vhosts/functions"
+
+nginx_build_config() {
+  declare desc="build nginx config to proxy posteio using sigil"
+  local CONTAINER_ID="$(< "${POSTEIO_ROOT}/CONTAINER_ID")"
+  local CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
+  local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
+  local SSL_IN_USE="$(< "${POSTEIO_ROOT}/SSL_IN_USE")"
+  local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
+
+  dokku_log_info1 "Generating nginx config file"
+  local SIGIL_PARAMS=(-f "$NGINX_TEMPLATE"
+    "CONTAINER_IP=${CONTAINER_IP}"
+    "DOMAIN_NAME=${DOMAIN_NAME}"
+    "SSL_IN_USE=${SSL_IN_USE}"
+    "POSTEIO_ROOT=${POSTEIO_ROOT}"
+    "DOKKU_LIB_ROOT=${DOKKU_LIB_ROOT}")
+  sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
+}

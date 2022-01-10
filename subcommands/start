@@ -3,12 +3,12 @@ source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 source "${PLUGIN_CORE_AVAILABLE_PATH}/common/functions"
 source "${PLUGIN_CORE_AVAILABLE_PATH}/nginx-vhosts/functions"
+source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/functions"
 
 posteio_start_func() {
   if [[ -f "${POSTEIO_ROOT}/DOMAIN" ]]; then
-    local CONTAINER_ID CONTAINER_IP
+    local CONTAINER_ID
     local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
-    local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
 
     for i in "${@}"; do
       case ${i} in
@@ -25,13 +25,10 @@ posteio_start_func() {
       -v /etc/localtime:/etc/localtime:ro -v "${POSTEIO_ROOT}/data:/data" \
       -h "${DOMAIN_NAME}" "${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}")
 
-    CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
+    dokku_log_info1 "Storing container ID"
     echo "${CONTAINER_ID}" > "${POSTEIO_ROOT}/CONTAINER"
 
-    dokku_log_info1 "Creating nginx config file"
-    local SIGIL_PARAMS=(-f "$NGINX_TEMPLATE" "CONTAINER_IP=${CONTAINER_IP}" \
-      "DOMAIN_NAME=${DOMAIN_NAME}" "POSTEIO_ROOT=${POSTEIO_ROOT}")
-    sigil "${SIGIL_PARAMS[@]}" | cat -s > "${POSTEIO_ROOT}/nginx.conf"
+    nginx_build_config
   else
     dokku_log_warn "set domain name first with dokku posteio:set-domain <domain>"
   fi
