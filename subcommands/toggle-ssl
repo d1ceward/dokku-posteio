@@ -7,11 +7,10 @@ source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/functions"
 
 posteio_enable_ssl() {
   declare desc="toggle ssl for posteio"
-  local SSL_IN_USE="$(< "${POSTEIO_ROOT}/SSL_IN_USE")"
 
-  if [[ $SSL_IN_USE != "true" ]]; then
+  if [[ ! -f "${POSTEIO_ROOT}/SSL_IN_USE" ]]; then
     dokku_log_info1 "Enabling SSL"
-    echo "true" > "${POSTEIO_ROOT}/SSL_IN_USE"
+    touch "${POSTEIO_ROOT}/SSL_IN_USE"
   else
     dokku_log_info1 "Disabling SSL"
     rm -f "${POSTEIO_ROOT}/SSL_IN_USE"

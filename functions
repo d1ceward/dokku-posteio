@@ -9,8 +9,14 @@ nginx_build_config() {
   local CONTAINER_ID="$(< "${POSTEIO_ROOT}/CONTAINER_ID")"
   local CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
   local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
-  local SSL_IN_USE="$(< "${POSTEIO_ROOT}/SSL_IN_USE")"
-  local NGINX_TEMPLATE="$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/nginx.conf.sigil"
+  local SSL_IN_USE
+  local NGINX_TEMPLATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/nginx.conf.sigil"
+
+  if [[ -f "${POSTEIO_ROOT}/SSL_IN_USE" ]]; then
+    SSL_IN_USE="true"
+  else
+    SSL_IN_USE="false"
+  fi
 
   dokku_log_info1 "Generating nginx config file"
   local SIGIL_PARAMS=(-f "$NGINX_TEMPLATE"
