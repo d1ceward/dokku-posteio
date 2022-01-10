@@ -6,7 +6,7 @@ server {
   access_log /var/log/nginx/dokku-posteio-access.log;
   error_log /var/log/nginx/dokku-posteio-error.log;
 
-{{ if $.SSL_IN_USE == "true" }}
+{{ if eq $.SSL_IN_USE "true" }}
   location / {
     return 301 https://$host:443$request_uri;
   }
@@ -55,7 +55,7 @@ server {
 {{ end }}
 }
 
-{{ if $.SSL_IN_USE == "true" }}
+{{ if eq $.SSL_IN_USE "true" }}
 server {
   listen [::]:443 ssl http2;
   listen 443 ssl http2;
