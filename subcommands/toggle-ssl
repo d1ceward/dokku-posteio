@@ -16,8 +16,10 @@ posteio_enable_ssl() {
     rm -f "${POSTEIO_ROOT}/SSL_IN_USE"
   fi
 
-  nginx_build_config
-  restart_nginx
+  if [[ ! -f "${POSTEIO_ROOT}/CONTAINER_ID" ]]; then
+    nginx_build_config
+    restart_nginx
+  fi
 }
 
 posteio_enable_ssl
