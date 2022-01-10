@@ -6,7 +6,7 @@ source "${PLUGIN_CORE_AVAILABLE_PATH}/nginx-vhosts/functions"
 
 nginx_build_config() {
   declare desc="build nginx config to proxy posteio using sigil"
-  local CONTAINER_ID="$(< "${POSTEIO_ROOT}/CONTAINER_ID")"
+  local CONTAINER_ID="$(< "${POSTEIO_ROOT}/CONTAINER")"
   local CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${CONTAINER_ID}")
   local DOMAIN_NAME="$(< "${POSTEIO_ROOT}/DOMAIN")"
   local SSL_IN_USE
