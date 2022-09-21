@@ -1,6 +1,6 @@
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/D1ceWard/dokku-posteio. By contributing you agree to abide by the Code of Merit.
+Bug reports and pull requests are welcome on GitHub at https://github.com/d1ceward/dokku-posteio. By contributing you agree to abide by the Code of Merit.
 
 Example :
 
