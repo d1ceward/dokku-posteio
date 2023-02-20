@@ -19,7 +19,7 @@ server {
     gzip_vary on;
     gzip_comp_level  6;
 
-    proxy_pass  http://dokku-posteio;
+    proxy_pass http://dokku-posteio;
     proxy_http_version 1.1;
     proxy_read_timeout 60s;
     proxy_buffer_size 4096;
@@ -67,7 +67,7 @@ server {
   ssl_certificate {{ $.POSTEIO_ROOT }}/data/ssl/server.crt;
   ssl_certificate_key {{ $.POSTEIO_ROOT }}/data/ssl/server.key;
   ssl_protocols TLSv1.2;
-  ssl_prefer_server_ciphers on;
+  ssl_prefer_server_ciphers off;
 
   keepalive_timeout 70;
 

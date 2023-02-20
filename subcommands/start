@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/config"
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -eo pipefail
+[[ $DOKKU_TRACE ]] && set -x
 source "${PLUGIN_CORE_AVAILABLE_PATH}/common/functions"
 source "${PLUGIN_CORE_AVAILABLE_PATH}/nginx-vhosts/functions"
 source "$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")/functions"
@@ -12,16 +13,16 @@ posteio_start_func() {
 
     for i in "${@}"; do
       case ${i} in
-        --disable-clamav) local CLAMAV=("-e DISABLE_CLAMAV=TRUE") ;;
-        --disable-rspamd) local RSPAMD=("-e DISABLE_RSPAMD=TRUE") ;;
-        --disable-roundcube) local ROUNDCUBE=("-e DISABLE_ROUNDCUBE=TRUE") ;;
+        --disable-clamav) local CLAMAV="-e DISABLE_CLAMAV=TRUE" ;;
+        --disable-rspamd) local RSPAMD="-e DISABLE_RSPAMD=TRUE" ;;
+        --disable-roundcube) local ROUNDCUBE="-e DISABLE_ROUNDCUBE=TRUE" ;;
       esac
     done
 
     dokku_log_info1 "Starting container"
     CONTAINER_ID=$(docker run -d --name="dokku.posteio" --restart=unless-stopped \
       -p 25:25 -p 110:110 -p 143:143 -p 465:465 -p 587:587 -p 993:993 -p 995:995 \
-      -e HTTPS=OFF ${CLAMAV} ${RSPAMD} ${ROUNDCUBE} \
+      -e HTTPS=OFF "${CLAMAV}" "${RSPAMD}" "${ROUNDCUBE}" \
       -v /etc/localtime:/etc/localtime:ro -v "${POSTEIO_ROOT}/data:/data" \
       -h "${DOMAIN_NAME}" "${POSTEIO_IMAGE}:${POSTEIO_IMAGE_VERSION}")
 
